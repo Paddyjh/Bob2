@@ -2,11 +2,13 @@
 
 Created for the management of a protocol for Scalable Computing 2024. This should be entirely collaborative, and the initial version is mostly built as a jumping off point for the class (or whoever decides to use Bob2 as their protocol).
 
+An example library for this is given for Python, please feel free to make libraries for other languages! The important element is that the protocol details are followed the same in every language.
+
 ## Protocol Summary
 
 | Byte 0                           | Byte 1                           | Byte 2                           | Bytes 3-18   | Bytes 19-20 | Bytes 21-25                                                                            | Bytes 26+ |
 | -------------------------------- | -------------------------------- | -------------------------------- | ------------ | ----------- | -------------------------------------------------------------------------------------- | --------- |
-| Bob2 major version - EG 1 in 1.0 | Bob2 minor version - EG 0 in 1.0 | Message Type - more detail below | Destination IPv6 Address | Destination Port number | Length of message in bytes (allows up to a terabyte of data to be sent in one message) |  Message         |
+| Bob2 major version - EG 1 in 1.0 | Bob2 minor version - EG 0 in 1.0 | Message Type - more detail below | Destination IPv6 Address | Destination Port number | Length of message in bytes (allows up to a terabyte of data to be sent in one message) |  Message (encoded in UTF-8)        |
 |                                  |                                  |                                  |              |             |                                                                                        |           |
 
 Message types - up to 256 types in Bob2 v0.0.
