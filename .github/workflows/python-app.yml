@@ -2,9 +2,9 @@ name: Protocol Automation
 
 on:
   push:
-    branches: ['*']
+    branches: ['main', '*'] # Triggers on pushes to main and any other branch
   pull_request:
-    branches: ['*']
+    branches: ['main', '*'] # Triggers on pull requests to main and any other branch
 
 permissions:
   contents: read
@@ -27,7 +27,8 @@ jobs:
         python3 -m pip install --upgrade pip
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-    - name: Run main file
+    - name: Run main file on main and pushed branch
+      if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/') # Runs on main and pushed branch
       run: |
         python3 src/main.py
 
