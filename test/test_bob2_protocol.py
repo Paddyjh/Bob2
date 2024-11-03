@@ -1,7 +1,7 @@
 import unittest
 # Use the following two lines only on Windows, as the project path was not recognized
-import sys
-sys.path.append('../')
+# import sys
+# sys.path.append('../')
 from src.protocol.bob2_protocol import Bob2Protocol
 import os
 
