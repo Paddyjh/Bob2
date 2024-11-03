@@ -2,9 +2,9 @@ name: Protocol Automation
 
 on:
   push:
-    branches: [kaustubh/encryption]
+    branches: ['*']
   pull_request:
-    branches: [kaustubh/encryption]
+    branches: ['*']
 
 permissions:
   contents: read
