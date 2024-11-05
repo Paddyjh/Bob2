@@ -2,6 +2,9 @@ import struct
 import socket
 import zlib
 
+CURRENT_MAJOR_VERSION=0
+CURRENT_MINOR_VERISON=2
+
 class Bob2Protocol:
     def __init__(self, version_major=0, version_minor=2):
         self.version_major = version_major
