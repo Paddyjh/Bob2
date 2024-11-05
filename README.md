@@ -31,7 +31,7 @@ Message types - up to 256 types in Bob2 v0.0.
 
 ## Protocol Details
 
-Bob2 v0.0 has the following assumptions, based on the simplest understanding of a LEO system
+Bob2 v0.2 has the following assumptions, based on the simplest understanding of a LEO system
 
 1. The network is built up of 3 component types
     1. Earth node - in a standard use case, this is a Starlink (or similar) customer with a satellite to connect to the LEO satellites.

@@ -3,7 +3,7 @@ import socket
 import zlib
 
 class Bob2Protocol:
-    def __init__(self, version_major=0, version_minor=0):
+    def __init__(self, version_major=0, version_minor=2):
         self.version_major = version_major
         self.version_minor = version_minor
 
