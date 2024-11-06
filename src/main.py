@@ -12,11 +12,17 @@ if __name__ == "__main__":
     device_b.complete_key_exchange(device_a_public_key.encode())
 
     message_content = "Hello from Device A to Device B!"
-    encrypted_message = device_a.encrypt_message(message_content)
+    message = device_a.build_message(
+        message_type=0,
+        dest_ipv6="2001:0db8:85a3:0000:0000:8a2e:0370:7334",
+        dest_port=12345,
+        message_content=message_content
+    )
 
-    decrypted_message = device_b.decrypt_message(encrypted_message)
-    print("Decrypted message on Device B:", decrypted_message)
+    parsed_message = device_b.parse_message(message)
+    parsed_message_content = parsed_message["message_content"]
+    print("Decrypted message on Device B:", parsed_message_content)
 
-    assert decrypted_message == message_content, "Message content mismatch!"
+    assert parsed_message_content == message_content, "Message content mismatch!"
     print("Message transmission successful.")
 
