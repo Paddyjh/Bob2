@@ -27,11 +27,18 @@ def main():
 
     args = parser.parse_args()
 
-    bob2 = Bob2Protocol(version_major=args.version_major,
-                        version_minor=args.version_minor)
+    device_a = Bob2Protocol()
+    device_b = Bob2Protocol()
+
+    device_a_public_key = device_a.initiate_key_exchange()
+    device_b_public_key = device_b.initiate_key_exchange()
+
+    # The public keys need to be exchanged between devices at this stage
+    device_a.complete_key_exchange(device_b_public_key.encode())
+    device_b.complete_key_exchange(device_a_public_key.encode())
 
     # Build the message
-    message = bob2.build_message(
+    message = device_a.build_message(
         message_type=args.message_type,
         dest_ipv6=args.dest_ipv6,
         dest_port=args.dest_port,
@@ -40,11 +47,13 @@ def main():
         sequence_number=args.sequence_number,
         message_content=args.message_content
     )
+    
+    parsed_message = device_b.parse_message(message)
+    parsed_message_content = parsed_message["message_content"]
+    print("Decrypted message on Device B:", parsed_message_content)
 
-    # Parse the message back
-    parsed_message = bob2.parse_message(message)
-    print(parsed_message)
-
+    assert parsed_message_content == args.message_content, "Message content mismatch!"
+    print("Message transmission successful.")
 
 if __name__ == "__main__":
     main()

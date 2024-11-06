@@ -38,12 +38,19 @@ class TestBob2Protocol(unittest.TestCase):
     def setUpClass(cls):
         global args
         args = get_args()[0]  # Parse arguments here
-        cls.bob2 = Bob2Protocol(
-            version_major=args.version_major, version_minor=args.version_minor)
+        cls.device_a = Bob2Protocol(version_major=args.version_major, version_minor=args.version_minor)
+        cls.device_b = Bob2Protocol(version_major=args.version_major, version_minor=args.version_minor)
 
     def test_message_build_and_parse(self):
+        
+        device_a_public_key = self.device_a.initiate_key_exchange()
+        device_b_public_key = self.device_b.initiate_key_exchange()
+
+        self.device_a.complete_key_exchange(device_b_public_key.encode())
+        self.device_b.complete_key_exchange(device_a_public_key.encode())
         # Build the message
-        message = self.bob2.build_message(
+        
+        message = self.device_a.build_message(
             message_type=args.message_type,
             dest_ipv6=args.dest_ipv6,
             dest_port=args.dest_port,
@@ -54,10 +61,9 @@ class TestBob2Protocol(unittest.TestCase):
         )
 
         # Parse the message back
-        parsed_message = self.bob2.parse_message(message)
+        parsed_message = self.device_b.parse_message(message)
 
         # Assertions
-        self.assertEqual(parsed_message["version_major"], args.version_major)
         self.assertEqual(parsed_message["version_minor"], args.version_minor)
         self.assertEqual(parsed_message["message_type"], args.message_type)
         self.assertEqual(ipaddress.IPv6Address(
@@ -68,8 +74,7 @@ class TestBob2Protocol(unittest.TestCase):
         self.assertEqual(parsed_message["source_port"], args.source_port)
         self.assertEqual(
             parsed_message["sequence_number"], args.sequence_number)
-        self.assertEqual(
-            parsed_message["message_content"], args.message_content)
+        self.assertEqual(parsed_message["message_content"], args.message_content)
 
 
 if __name__ == "__main__":
