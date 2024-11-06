@@ -1,32 +1,43 @@
 import struct
 import socket
 import zlib
-import os
-from nacl.secret import SecretBox
+from nacl.public import PrivateKey, PublicKey, Box
 from nacl.utils import random
 
 CURRENT_MAJOR_VERSION=0
 CURRENT_MINOR_VERISON=2
 
 class Bob2Protocol:
-    def __init__(self, version_major=0, version_minor=2, key=None):
+    def __init__(self, version_major=0, version_minor=0):
         self.version_major = version_major
         self.version_minor = version_minor
-        self.key = key or random(SecretBox.KEY_SIZE)
-        
-    def encrypt_message(self, message_content):
-        nonce = random(24)
-        box = SecretBox(self.key)
-        encrypted_content = box.encrypt(message_content.encode('utf-8'), nonce)
+        self.session_key = None
 
+    def initiate_key_exchange(self):
+        private_key = PrivateKey.generate()
+        public_key = private_key.public_key
+        self.private_key = private_key
+        return public_key
+
+    def complete_key_exchange(self, public_key_bytes):
+        public_key = PublicKey(public_key_bytes)
+        self.session_key = Box(self.private_key, public_key)
+
+    def encrypt_message(self, message_content):
+        if not self.session_key:
+            raise ValueError("Session key not established")
+        
+        nonce = random(24)
+        encrypted_content = self.session_key.encrypt(message_content.encode('utf-8'), nonce)
         return nonce + encrypted_content.ciphertext
 
-    def decrypt_message(self, encrypted_content):
-        nonce = encrypted_content[:24]
-        content = encrypted_content[24:]
-        box = SecretBox(self.key)
-        decrypted_content = box.decrypt(nonce + content)
+    def decrypt_message(self, encrypted_content_with_nonce):
+        if not self.session_key:
+            raise ValueError("Session key not established")
         
+        nonce = encrypted_content_with_nonce[:24]
+        encrypted_content = encrypted_content_with_nonce[24:]
+        decrypted_content = self.session_key.decrypt(nonce + encrypted_content)
         return decrypted_content.decode('utf-8')
 
     def build_message(self, message_type, dest_ipv6, dest_port, message_content, multiple_packets=False, packet_num=0):
