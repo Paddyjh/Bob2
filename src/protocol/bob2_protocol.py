@@ -3,7 +3,7 @@
 import struct
 import socket
 import zlib
-from protocol.necessary_headers import Bob2Headers
+from src.protocol.necessary_headers import Bob2Headers
 from nacl.public import PrivateKey, PublicKey, Box
 from nacl.utils import random
 
@@ -58,7 +58,7 @@ class Bob2Protocol:
         message_length = len(encrypted_content)
 
         # Calculate checksum
-        checksum = zlib.crc32(encrypted_content.encode('utf-8'))
+        checksum = zlib.crc32(encrypted_content)
         checksum_bytes = struct.pack('!I', checksum)
 
         # Build the full message
@@ -78,19 +78,17 @@ class Bob2Protocol:
         message_length = int.from_bytes(raw_data[47:52], byteorder='big')
         expected_checksum = struct.unpack('!I', raw_data[52:56])[0]
         encrypted_content = raw_data[56:56 + message_length]
-        actual_checksum = zlib.crc32(message_content)
+        actual_checksum = zlib.crc32(encrypted_content)
 
         if expected_checksum != actual_checksum:
             raise ValueError("Checksum verification failed")
-        
-        message_content = self.decrypt_message(encrypted_content)
 
         message_content = self.decrypt_message(encrypted_content)
         # Add parsed message content to the header info
         header_info.update({
             "message_length": message_length,
             "checksum": expected_checksum,
-            "message_content": message_content.decode('utf-8')
+            "message_content": message_content
         })
 
         return header_info

@@ -2,8 +2,8 @@ import unittest
 import ipaddress
 import argparse
 import sys
-from protocol.bob2_protocol import Bob2Protocol
-from protocol.necessary_headers import Bob2Headers
+from src.protocol.bob2_protocol import Bob2Protocol
+from src.protocol.necessary_headers import Bob2Headers
 
 
 def get_args():
