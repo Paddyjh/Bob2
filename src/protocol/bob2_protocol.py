@@ -3,7 +3,7 @@
 import struct
 import socket
 import zlib
-from src.protocol.necessary_headers import Bob2Headers
+from protocol.necessary_headers import Bob2Headers
 from nacl.public import PrivateKey, PublicKey, Box
 from nacl.utils import random
 
