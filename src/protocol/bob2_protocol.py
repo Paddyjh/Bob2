@@ -6,7 +6,6 @@ import zlib
 from protocol.necessary_headers import Bob2Headers
 
 
-
 class Bob2Protocol:
     def __init__(self, version_major=0, version_minor=0):
         self.version_major = version_major
