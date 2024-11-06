@@ -41,6 +41,8 @@ class Bob2Protocol:
         packet_num = int.from_bytes(raw_data[3:5], byteorder='big')
         if packet_num == 0:
             multiple_packets = False
+        else:
+            multiple_packets = True
         dest_ip_bytes = raw_data[5:21]
         dest_ipv6 = socket.inet_ntop(socket.AF_INET6, dest_ip_bytes)
         dest_port = struct.unpack('!H', raw_data[21:23])[0]
